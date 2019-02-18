@@ -1,0 +1,77 @@
+type Artist {
+    id: ID!
+    name: String!
+    startingYear: Int!
+    #albums: [Album!]!
+    composedTracks: [Track!]!
+  	lyricsTracks: [Track!]
+}
+
+type Track {
+	id: ID!
+	genres: [String!]!
+	length: Float!
+	name: String!
+	artist_ids: [Artist!]!
+	ratings: Rating
+}
+
+type Rating{
+	score: Float!
+	voters: Int!
+}
+
+input Rating_{
+	score: Float!
+	voters: Int!
+}
+
+type Album1 {
+	id: ID!
+	formats: [String!]!
+	name: String!
+	releaseYear: Number!
+	tracks: [Track!]!
+	availabitlity: String!
+	genre: String! 
+}
+
+
+type Album2 {
+	id: ID!
+	formats: [String!]!
+	name: String!
+	releaseYear: Number!
+	tracks: [Track!]!
+	availabitlity: [String!]!
+	genre: String!  
+}
+
+type Album3 {
+	id: ID!
+	formats: [String!]!
+	name: String!
+	releaseYear: Number!
+	tracks: [Track!]!
+	availabitlity: [String!]!
+	genre: [String!]!  
+}
+
+union Album = Album1 | Album2 | Album3
+
+type Query{
+	artist(id: ID!) : Artist
+	allArtists: [Artist!]!
+	allTracks: [Track]
+}
+
+type Mutation{
+	createArtist(name: String!, startingYear: Int!): Artist
+	createTrack(name: String!, lenght: Float!, genres: [String!], 
+				artist_ids: [ID!]!, ratings: Rating_): Track
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
