@@ -70,6 +70,7 @@ public class AlbumRepository {
     
     @SuppressWarnings("unchecked")
 	private Album album(Document doc) {
+    	if(doc==null) return null;
     	String type = getType(doc);
     	
     	switch (type) {

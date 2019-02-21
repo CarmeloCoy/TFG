@@ -1,15 +1,13 @@
 package modelo;
 
-public class Rating_ {
-	
+public class RatingInput {
 	private double score;
 	private int voters;
 	
-	public Rating_() {
-		super();
+	public RatingInput() {
 	}
 	
-	public Rating_(double score, int voters) {
+	public RatingInput(double score, int voters) {
 		this();
 		this.score = score;
 		this.voters = voters;
@@ -19,14 +17,21 @@ public class Rating_ {
 		return score;
 	}
 
+	public void setScore(double score) {
+		this.score = score;
+	}
+
 	public int getVoters() {
 		return voters;
 	}
 
+	public void setVoters(int voters) {
+		this.voters = voters;
+	}
+	
 	public Rating getRating() {
 		return new Rating(score, voters);
 	}
-	
 	
 	
 }
