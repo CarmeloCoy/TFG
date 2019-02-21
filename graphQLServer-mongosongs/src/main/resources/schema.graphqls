@@ -2,7 +2,7 @@ type Artist {
     id: ID!
     name: String!
     startingYear: Int!
-    #albums: [Album!]!
+    albums: [Album!]!
     composedTracks: [Track!]!
   	lyricsTracks: [Track!]
 }
@@ -21,54 +21,71 @@ type Rating{
 	voters: Int!
 }
 
-input Rating_{
+input RatingInput{
 	score: Float!
 	voters: Int!
 }
 
-type Album1 {
+type Album1 implements Album{
 	id: ID!
 	formats: [String!]!
 	name: String!
-	releaseYear: Number!
+	releaseYear: Int!
 	tracks: [Track!]!
 	availabitlity: String!
 	genre: String! 
 }
 
 
-type Album2 {
+type Album2 implements Album {
 	id: ID!
 	formats: [String!]!
 	name: String!
-	releaseYear: Number!
+	releaseYear: Int!
 	tracks: [Track!]!
 	availabitlity: [String!]!
 	genre: String!  
 }
 
-type Album3 {
+type Album3 implements Album{
 	id: ID!
 	formats: [String!]!
 	name: String!
-	releaseYear: Number!
+	releaseYear: Int!
 	tracks: [Track!]!
-	availabitlity: [String!]!
-	genre: [String!]!  
+	availabitlity: [String!]
+	genres: [String!]  
 }
 
-union Album = Album1 | Album2 | Album3
+interface Album{
+	id: ID!
+	formats: [String!]!
+	name: String!
+	releaseYear: Int!
+	tracks: [Track!]!
+}
 
 type Query{
 	artist(id: ID!) : Artist
-	allArtists: [Artist!]!
-	allTracks: [Track]
+	allArtists: [Artist]!
+	track(id:ID!) : Track
+	allTracks: [Track]!
+	album(id : ID!) : Album
+	allAlbums: [Album]!
 }
 
 type Mutation{
 	createArtist(name: String!, startingYear: Int!): Artist
+	addTracks(id: ID!, composedTrack_ids: [ID!]!, lyricsTrack_ids: [ID!]): Artist 
+	addAlbums(id:ID!, album_ids : [ID!]!): Artist
 	createTrack(name: String!, lenght: Float!, genres: [String!], 
-				artist_ids: [ID!]!, ratings: Rating_): Track
+				artist_ids: [ID!]!, ratings: RatingInput): Track
+	createAlbum1(formats: [String!]!, name: String!, tracks: [ID!]!,
+				releaseYear: Int!, availabitlity: String! ,	genre: String!): Album
+	createAlbum2(formats: [String!]!, name: String!, tracks: [ID!]!, 
+				releaseYear: Int!, availabitlity: [String!]! , genre: String!): Album
+	createAlbum3(formats: [String!]!, name: String!, tracks: [ID!]!, 
+				releaseYear: Int!,  availabitlity: [String!]! , genres: [String!]!): Album
 }
 
 schema {

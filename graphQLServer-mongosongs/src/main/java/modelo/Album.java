@@ -2,19 +2,20 @@ package modelo;
 
 import java.util.List;
 
-public abstract class SuperAlbum {
-	protected String id;
+public abstract class Album {
+	public String id;
 	protected String name;
 	protected List<String> formats;
 	protected int releaseYear;
-	protected List<String> tracks;
+	protected List<String> track_ids;
 	
-	public SuperAlbum(String name, List<String> formats, int releaseYear, List<String> tracks) {
+	public Album(String id, String name, List<String> formats, int releaseYear, List<String> track_ids) {
 		super();
+		this.id=id;
 		this.name = name;
 		this.formats = formats;
 		this.releaseYear = releaseYear;
-		this.tracks = tracks;
+		this.track_ids = track_ids;
 	}
 
 	public String getId() {
@@ -49,12 +50,12 @@ public abstract class SuperAlbum {
 		this.releaseYear = releaseYear;
 	}
 
-	public List<String> getTracks() {
-		return tracks;
+	public List<String> getTrack_ids() {
+		return track_ids;
 	}
 
-	public void setTracks(List<String> tracks) {
-		this.tracks = tracks;
+	public void setTrack_ids(List<String> track_ids) {
+		this.track_ids = track_ids;
 	}
 	
 		

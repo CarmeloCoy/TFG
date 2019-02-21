@@ -11,6 +11,8 @@ import java.util.Optional;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
+import graphql.GraphQLException;
+
 import static com.mongodb.client.model.Filters.or;
 import static com.mongodb.client.model.Filters.eq;
 
@@ -28,6 +30,7 @@ public class ArtistRepository {
     
     public Artist findById(String id) {
         Document doc = artists.find(eq("_id", new ObjectId(id))).first();
+        //Document doc = artists.find(eq("_id", id)).first();
         return artist(doc);
     }
     
@@ -51,13 +54,17 @@ public class ArtistRepository {
     
        
     public void saveArtist(Artist artist) {
-        Document doc = new Document();
-        doc.append("name", artist.getName());
-        doc.append("startingYear", artist.getStartingYear());
-        /*doc.append("albums", artist.getAlbums());
-        doc.append("composedTracks", artist.getComposedTracks());
-        doc.append("lyricsTracks", artist.getLyricstracks());
-        */artists.insertOne(doc);
+        Document doc = this.doc(artist);
+        artists.insertOne(doc);
+    }
+    
+    public void updateArtist(Artist artist) {
+    	Document doc = artists.find(eq("_id", new ObjectId(artist.getId()))).first();
+    	if(doc==null)
+    		 throw new GraphQLException("Invalid artist id"+artist.getId());
+    	 Document newdoc = this.doc(artist);
+    	 
+    	 artists.replaceOne(doc, newdoc);
     }
     
     private Bson buildFilter(Artist artist) {
@@ -80,10 +87,27 @@ public class ArtistRepository {
         return nameCondition != null ? nameCondition : idCondition;
     }
     
-    private Artist artist(Document doc) {
+    @SuppressWarnings("unchecked")
+	private Artist artist(Document doc) {
+    	if (doc  == null) return null;
         return new Artist(
         		doc.get("_id").toString(),
                 doc.get("name").toString(),
-                doc.getInteger("startingYear"));
+                doc.getInteger("startingYear"),
+                (List<String>)doc.get("albums"),
+                (List<String>)doc.get("composedTracks"),
+                (List<String>)doc.get("lyricsTracks"));
+    }
+    
+    private Document doc(Artist artist) {
+    	if (artist  == null) return null;
+    	Document doc = new Document();
+        doc.append("name", artist.getName());
+        doc.append("startingYear", artist.getStartingYear());
+        doc.append("albums", artist.getAlbum_ids());
+        doc.append("composedTracks", artist.getComposedTracks());
+        doc.append("lyricsTracks", artist.getLyricstracks());
+        return doc;
+    	
     }
 }

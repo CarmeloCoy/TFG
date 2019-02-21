@@ -2,16 +2,23 @@ package modelo;
 
 import java.util.List;
 
-public class Album3 extends SuperAlbum {
+public class Album3 extends Album {
 
 	private List<String> availabitlity;
-	private List<String> genre;
+	private List<String> genres;
 
-	public Album3(String name, List<String> formats, int releaseYear, List<String> tracks, List<String> availabitlity,
-			List<String> genre) {
-		super(name, formats, releaseYear, tracks);
+	public Album3(String id,String name, List<String> formats, int releaseYear, List<String> tracks, List<String> availabitlity,
+			List<String> genres) {
+		super(id, name, formats, releaseYear, tracks);
 		this.availabitlity = availabitlity;
-		this.genre = genre;
+		this.genres = genres;
+	}
+	
+	public Album3(String name, List<String> formats, int releaseYear, List<String> tracks, List<String> availabitlity,
+			List<String>  genres) {
+		super(null,name, formats, releaseYear, tracks);
+		this.availabitlity=availabitlity;
+		this.genres=genres;
 	}
 
 	public List<String> getAvailabitlity() {
@@ -22,12 +29,12 @@ public class Album3 extends SuperAlbum {
 		this.availabitlity = availabitlity;
 	}
 
-	public List<String> getGenre() {
-		return genre;
+	public List<String> getGenres() {
+		return genres;
 	}
 
-	public void setGenre(List<String> genre) {
-		this.genre = genre;
+	public void setGenre(List<String> genres) {
+		this.genres = genres;
 	}
 
 }

@@ -4,6 +4,7 @@ package repositories;
 
 
 import modelo.Rating;
+
 import modelo.Track;
 
 import com.mongodb.client.MongoCollection;
@@ -26,6 +27,7 @@ public class TrackRepository {
 
     public Track findById(String id) {
         Document doc = tracks.find(eq("_id", new ObjectId(id))).first();
+        //Document doc = tracks.find(eq("_id", id)).first();
         return track(doc);
     }
     
@@ -35,27 +37,34 @@ public class TrackRepository {
     	doc.append("length", track.getLength());
     	doc.append("genres", track.getGenres());
     	doc.append("artist_ids", track.getArtist_ids());
-    	doc.append("ratings", new Document()
+    	doc.append("ratings", new ArrayList<Document>().add( new Document()
     			.append("score", track.getRatings().getScore())
-    			.append("voters", track.getRatings().getVoters()));
+    			.append("voters", track.getRatings().getVoters())));
     	tracks.insertOne(doc);
     }
 
     
     @SuppressWarnings("unchecked")
 	private Track track(Document doc) {
-    	Document doc1 = (Document)doc.get("ratings");
-    	Rating ratings = null;
-    	if(doc1!=null) {
-    		ratings=new Rating(doc1.getDouble("score"), doc1.getInteger("voters"));
-    	}
+    	if (doc== null) return null;
+    	
+    	Rating rating = null;
+    	List<Document> ratings =((List<Document>)doc.get("ratings"));
+    	if (ratings != null) {
+    		Document doc1 = ratings.get(0);
+        	
+        	if(doc1!=null) {
+        		rating=new Rating(doc1.getDouble("score"), doc1.getInteger("voters"));
+        	}
+		}
+    	
         return new Track( 
         		doc.get("_id").toString(),
         		(List<String>)doc.get("genres"),
         		doc.getDouble("length"),
         		doc.getString("name"),
         		(List<String>)doc.get("artist_ids"),
-        		ratings);
+        		rating);
     }
 
 	public List<Track> getAllTracks() {
