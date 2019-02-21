@@ -32,14 +32,16 @@ public class TrackRepository {
     }
     
     public void saveTrack(Track track) {
+    	List<Document> ratings = new ArrayList<Document>();
+    	ratings.add( new Document()
+    			.append("score", track.getRatings().getScore())
+    			.append("voters", track.getRatings().getVoters()));
     	Document doc = new Document();
     	doc.append("name", track.getName());
     	doc.append("length", track.getLength());
     	doc.append("genres", track.getGenres());
     	doc.append("artist_ids", track.getArtist_ids());
-    	doc.append("ratings", new ArrayList<Document>().add( new Document()
-    			.append("score", track.getRatings().getScore())
-    			.append("voters", track.getRatings().getVoters())));
+    	doc.append("ratings", ratings);
     	tracks.insertOne(doc);
     }
 
