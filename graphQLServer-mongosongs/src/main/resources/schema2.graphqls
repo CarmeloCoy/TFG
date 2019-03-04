@@ -26,7 +26,7 @@ input RatingInput{
 	voters: Int!
 }
 
-type Album1 {
+type Album1 implements Album{
 	id: ID!
 	formats: [String!]!
 	name: String!
@@ -37,7 +37,7 @@ type Album1 {
 }
 
 
-type Album2 {
+type Album2 implements Album {
 	id: ID!
 	formats: [String!]!
 	name: String!
@@ -47,7 +47,7 @@ type Album2 {
 	genre: String!  
 }
 
-type Album3 {
+type Album3 implements Album{
 	id: ID!
 	formats: [String!]!
 	name: String!
@@ -57,7 +57,13 @@ type Album3 {
 	genres: [String!]  
 }
 
-union Album = Album1 | Album2 | Album3
+interface Album{
+	id: ID!
+	formats: [String!]!
+	name: String!
+	releaseYear: Int!
+	tracks: [Track!]!
+}
 
 type Query{
 	artist(id: ID!) : Artist
