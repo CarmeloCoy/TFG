@@ -7,6 +7,7 @@ public class AuthData {
 
     public AuthData() {
     }
+    
 
     public AuthData(String email, String password) {
         this.email = email;

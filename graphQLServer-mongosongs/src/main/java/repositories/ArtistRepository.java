@@ -4,6 +4,7 @@ package repositories;
 
 import modelo.Artist;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,6 @@ public class ArtistRepository {
     	if(doc==null)
     		 throw new GraphQLException("Invalid artist id"+artist.getId());
     	 Document newdoc = this.doc(artist);
-    	 
     	 artists.replaceOne(doc, newdoc);
     }
     

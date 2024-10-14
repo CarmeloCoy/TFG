@@ -1,23 +1,31 @@
 package resolvers;
 
+import java.text.ParseException;
+
+
 import java.util.List;
 
-import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 
+import graphql.GraphQLException;
 import modelo.Link;
 import modelo.LinkFilter;
 import modelo.User;
+import modelo.Vote;
 import reporitories.LinkRepository;
 import reporitories.TrackRepository;
+import reporitories.VoteRepository;
 
-public class Query implements GraphQLRootResolver {
+public class Query implements GraphQLQueryResolver {
 
 	private final LinkRepository linkRepository;
 	private final TrackRepository userRepository;
+	private final VoteRepository voteRepository;
 
-	public Query(LinkRepository linkRepository, TrackRepository userRepository) {
+	public Query(LinkRepository linkRepository, TrackRepository userRepository, VoteRepository voteRepository) {
 		this.linkRepository = linkRepository;
 		this.userRepository = userRepository;
+		this.voteRepository = voteRepository;
 	}
 	
 	public List<Link> allLinks(LinkFilter filter, Number skip, Number first) {
@@ -29,5 +37,12 @@ public class Query implements GraphQLRootResolver {
 		return userRepository.getAllUsers();
 	}
 	
+	public List<Vote> allVotes(Number skip, Number first) {
+	    try {
+			return voteRepository.getAllvotes( skip.intValue(), first.intValue());
+		} catch (ParseException e) {
+			throw new GraphQLException("Invalid date format: Expected: dd-mm-yyyy");
+		}
+	}
 	
 }

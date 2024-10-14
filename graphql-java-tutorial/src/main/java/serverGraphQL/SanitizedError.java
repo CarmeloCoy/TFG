@@ -4,8 +4,10 @@ import graphql.ExceptionWhileDataFetching;
 
 public class SanitizedError extends ExceptionWhileDataFetching {
     
-    public SanitizedError(ExceptionWhileDataFetching inner) {
-        super(inner.getException());
+	private static final long serialVersionUID = 1L;
+
+	public SanitizedError(ExceptionWhileDataFetching inner) {
+    	super(null, inner.getException(), inner.getLocations().get(0));
     }
 
     @Override

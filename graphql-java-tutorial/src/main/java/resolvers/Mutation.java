@@ -1,22 +1,27 @@
 package resolvers;
 
 import java.time.Instant;
+
+
+
+
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 
 import graphql.GraphQLException;
 import modelo.AuthData;
 import modelo.Link;
 import modelo.SigninPayload;
 import modelo.User;
-import modelo.Track;
+import modelo.Vote;
+import modelo.VoteInput;
 import reporitories.LinkRepository;
 import reporitories.TrackRepository;
 import reporitories.VoteRepository;
 
-public class Mutation implements GraphQLRootResolver {
+public class Mutation implements GraphQLMutationResolver {
     
     private final LinkRepository linkRepository;
     private final TrackRepository userRepository;
@@ -47,9 +52,9 @@ public class Mutation implements GraphQLRootResolver {
         throw new GraphQLException("Invalid credentials");
     }
 
-    public Track createVote(String linkId, String userId) {
+    public Vote createVote(VoteInput vote) {
         ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-        return voteRepository.saveVote(new Track(now, userId, linkId));
+        return voteRepository.saveVote(new Vote(vote.getCreatedAt(), vote.getUser(), vote.getLink()));
     }
 
     

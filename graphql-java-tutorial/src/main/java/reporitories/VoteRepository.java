@@ -1,13 +1,17 @@
 package reporitories;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
+
+import modelo.DateTime;
+import modelo.Link;
 import modelo.Scalars;
-import modelo.Track;
+import modelo.Vote;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import java.time.ZonedDateTime;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
@@ -21,41 +25,49 @@ public class VoteRepository {
         this.votes = votes;
     }
 
-    public List<Track> findByUserId(String userId) {
-        List<Track> list = new ArrayList<>();
+    public List<Vote> findByUserId(String userId) throws ParseException {
+        List<Vote> list = new ArrayList<>();
         for (Document doc : votes.find(eq("userId", userId))) {
             list.add(vote(doc));
         }
         return list;
     }
 
-    public List<Track> findByLinkId(String linkId) {
-        List<Track> list = new ArrayList<>();
+    public List<Vote> findByLinkId(String linkId) throws ParseException {
+        List<Vote> list = new ArrayList<>();
         for (Document doc : votes.find(eq("linkId", linkId))) {
             list.add(vote(doc));
         }
         return list;
     }
 
-    public Track saveVote(Track vote) {
+    public Vote saveVote(Vote vote) {
         Document doc = new Document();
         doc.append("userId", vote.getUserId());
         doc.append("linkId", vote.getLinkId());
         doc.append("createdAt", Scalars.dateTime.getCoercing().serialize(vote.getCreatedAt()));
         votes.insertOne(doc);
-        return new Track(
+        return new Vote(
                 doc.get("_id").toString(),
                 vote.getCreatedAt(),
                 vote.getUserId(),
                 vote.getLinkId());
     }
     
-    private Track vote(Document doc) {
-        return new Track(
+    private Vote vote(Document doc) throws ParseException {
+        return new Vote(
                 doc.get("_id").toString(),
-                ZonedDateTime.parse(doc.getString("createdAt")),
+                new DateTime(doc.getString("createdAt")),
                 doc.getString("userId"),
                 doc.getString("linkId")
         );
     }
+
+	public List<Vote> getAllvotes(int skip, int first) throws ParseException {
+		List<Vote> allVotes = new ArrayList<>();
+        for (Document doc : votes.find().skip(skip).limit(first)) {
+            allVotes.add(vote(doc));
+        }
+        return allVotes;
+	}
 }

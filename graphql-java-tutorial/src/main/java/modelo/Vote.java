@@ -2,17 +2,17 @@ package modelo;
 
 import java.time.ZonedDateTime;
 
-public class Track {
+public class Vote {
 	private final String id;
-	private final ZonedDateTime createdAt;
+	private final Object createdAt;
 	private final String userId;
 	private final String linkId;
 
-	public Track(ZonedDateTime createdAt, String userId, String linkId) {
+	public Vote(Object createdAt, String userId, String linkId) {
 		this(null, createdAt, userId, linkId);
 	}
 
-	public Track(String id, ZonedDateTime createdAt, String userId, String linkId) {
+	public Vote(String id, Object createdAt, String userId, String linkId) {
 		this.id = id;
 		this.createdAt = createdAt;
 		this.userId = userId;
@@ -23,7 +23,7 @@ public class Track {
 		return id;
 	}
 
-	public ZonedDateTime getCreatedAt() {
+	public Object getCreatedAt() {
 		return createdAt;
 	}
 

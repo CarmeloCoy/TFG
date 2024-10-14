@@ -4,11 +4,11 @@ import com.coxautodev.graphql.tools.GraphQLResolver;
 
 import modelo.Link;
 import modelo.User;
-import modelo.Track;
+import modelo.Vote;
 import reporitories.LinkRepository;
 import reporitories.TrackRepository;
 
-public class VoteResolver implements GraphQLResolver<Track> {
+public class VoteResolver implements GraphQLResolver<Vote> {
     
     private final LinkRepository linkRepository;
     private final TrackRepository userRepository;
@@ -18,11 +18,11 @@ public class VoteResolver implements GraphQLResolver<Track> {
         this.userRepository = userRepository;
     }
 
-    public User user(Track vote) {
+    public User user(Vote vote) {
         return userRepository.findById(vote.getUserId());
     }
     
-    public Link link(Track vote) {
+    public Link link(Vote vote) {
         return linkRepository.findById(vote.getLinkId());
     }
 }

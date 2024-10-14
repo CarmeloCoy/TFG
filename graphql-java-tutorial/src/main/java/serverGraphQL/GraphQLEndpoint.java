@@ -2,6 +2,7 @@ package serverGraphQL;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 
+
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
@@ -13,7 +14,8 @@ import javax.servlet.annotation.WebServlet;
 import graphql.ExceptionWhileDataFetching;
 import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
-import graphql.servlet.SimpleGraphQLServlet;
+import graphql.servlet.GraphQLConfiguration;
+import graphql.servlet.GraphQLHttpServlet;
 import modelo.Scalars;
 import reporitories.LinkRepository;
 import reporitories.TrackRepository;
@@ -27,9 +29,11 @@ import resolvers.VoteResolver;
 
 
 @WebServlet(urlPatterns = "/graphql")
-public class GraphQLEndpoint extends SimpleGraphQLServlet {
+public class GraphQLEndpoint extends GraphQLHttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private GraphQLConfiguration configuration;
+	 
 	private static final LinkRepository linkRepository;
 	private static final TrackRepository userRepository;
 	private static final VoteRepository voteRepository;
@@ -41,27 +45,32 @@ public class GraphQLEndpoint extends SimpleGraphQLServlet {
 		voteRepository = new VoteRepository(mongo.getCollection("votes"));
 	}
 	
-	@Override
+	/*@Override
 	protected List<GraphQLError> filterGraphQLErrors(List<GraphQLError> errors) {
 	    return errors.stream()
 	            .filter(e -> e instanceof ExceptionWhileDataFetching || super.isClientError(e))
 	            .map(e -> e instanceof ExceptionWhileDataFetching ? new SanitizedError((ExceptionWhileDataFetching) e) : e)
 	            .collect(Collectors.toList());
-	}
+	}*/
 	
 	public GraphQLEndpoint() {
-		super(buildSchema());
+		configuration = GraphQLConfiguration.with(buildSchema()).build();
 	}
 
 	private static GraphQLSchema buildSchema() {
 		return SchemaParser.newParser().file("schema.graphqls")
 				 .resolvers(
-				            new Query(linkRepository, userRepository),
+				            new Query(linkRepository, userRepository, voteRepository),
 				            new Mutation(linkRepository, userRepository, voteRepository),
 				            new SigninResolver(),
 				            new LinkResolver(userRepository),
 				            new VoteResolver(linkRepository, userRepository)) 
 				        .scalars(Scalars.dateTime). 
 				build().makeExecutableSchema();
+	}
+
+	@Override
+	protected GraphQLConfiguration getConfiguration() {
+		return configuration;
 	}
 }
